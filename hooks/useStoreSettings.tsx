@@ -50,11 +50,12 @@ export interface StoreSettings {
   whatsapp_order_enabled: string;
   topbar_text: string;
   topbar_enabled: string;
-  // WhatsApp banner
+  // WhatsApp banner & button
   whatsapp_banner_enabled: string;
   whatsapp_banner_title: string;
   whatsapp_banner_number: string;
   whatsapp_banner_message: string;
+  whatsapp_float_enabled: string;
   // Legal pages
   privacy_title: string;
   privacy_content: string;
@@ -121,14 +122,15 @@ const DEFAULT_STORE_SETTINGS: StoreSettings = {
   whatsapp_banner_enabled: "false",
   whatsapp_banner_title: "Have questions? Chat with us on WhatsApp!",
   whatsapp_banner_number: "",
-  whatsapp_banner_message: "Hello! I have a question about your products.",
+  whatsapp_banner_message: "আসসালামু আলাইকুম! আমি কাস্টম জার্সি তৈরি করতে চাই। বিস্তারিত ও প্রাইস জানাবেন প্লিজ।",
+  whatsapp_float_enabled: "true",
   privacy_title: "Privacy Policy",
   privacy_content: "Your privacy policy content goes here.",
   terms_title: "Terms of Service",
   terms_content: "Your terms of service content goes here.",
   header_categories: "",
-  mobile_marquee_enabled: "false",
-  mobile_marquee_text: "Welcome to our store! Enjoy free shipping on orders over 1000 Taka.",
+  mobile_marquee_enabled: "true",
+  mobile_marquee_text: "Welcome to our store! Enjoy free shipping on orders over 1000 Taka. | Order Your Favourite Club Jersey | Custom Jersey & Sports Equipment Available",
 };
 
 export const STORE_SETTINGS_QUERY_KEY = ["store-settings"];
@@ -152,8 +154,9 @@ export function useStoreSettings() {
 
       return settings;
     },
-    staleTime: 1000 * 30,
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 

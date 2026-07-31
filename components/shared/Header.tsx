@@ -1,22 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCart } from "@/contexts/CartContext";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
-import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { useAuth } from "@/hooks/useAuth";
 import { useCategories } from "@/hooks/useShopData";
+import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { useWishlist } from "@/hooks/useWishlist";
 import {
   ChevronDown,
   ChevronRight,
-  Flame,
   Heart,
   Home,
   LogOut,
@@ -26,14 +25,13 @@ import {
   Search,
   ShoppingBag,
   ShoppingBasket,
-  Sparkles,
   User,
-  X,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function Header() {
   const { totalItems } = useCart();
@@ -53,7 +51,7 @@ export function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -61,44 +59,47 @@ export function Header() {
   const storeLogo = storeSettings?.store_logo || "";
   const whatsappNumber = storeSettings?.whatsapp_number || "";
 
-  const headerCategoriesString = storeSettings?.header_categories || "";
-  const headerCategoriesSlugs = headerCategoriesString
-    ? headerCategoriesString.split(",").map((s: string) => s.trim()).filter(Boolean)
-    : [];
+  const activeCategories = useMemo(() => {
+    const headerCategoriesString = storeSettings?.header_categories || "";
+    const headerCategoriesSlugs = headerCategoriesString
+      ? headerCategoriesString.split(",").map((s: string) => s.trim()).filter(Boolean)
+      : [];
 
-  const activeCategories = categories
-    .filter((cat: any) => cat.is_active !== false)
-    .filter((cat: any) => {
-      // If the dashboard has configured categories, only show those.
-      // Otherwise, fallback to showing all active categories.
-      if (headerCategoriesSlugs.length > 0) {
-        return headerCategoriesSlugs.includes(cat.slug);
-      }
-      return true;
-    })
-    .sort((a: any, b: any) => {
-      if (headerCategoriesSlugs.length > 0) {
-        const indexA = headerCategoriesSlugs.indexOf(a.slug);
-        const indexB = headerCategoriesSlugs.indexOf(b.slug);
-        return indexA - indexB;
-      }
-      return 0;
-    })
-    .map((cat: any) => ({
-      id: cat.id,
-      name: cat.name,
-      slug: cat.slug,
-      image: cat.image,
-      href: `/shop?category=${cat.slug}`,
-    }))
-    .slice(0, 8);
+    return categories
+      .filter((cat: any) => cat.is_active !== false)
+      .filter((cat: any) => {
+        if (headerCategoriesSlugs.length > 0) {
+          return headerCategoriesSlugs.includes(cat.slug);
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        if (headerCategoriesSlugs.length > 0) {
+          const indexA = headerCategoriesSlugs.indexOf(a.slug);
+          const indexB = headerCategoriesSlugs.indexOf(b.slug);
+          return indexA - indexB;
+        }
+        return 0;
+      })
+      .map((cat: any) => ({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+        image: cat.image,
+        href: `/shop?category=${cat.slug}`,
+      }))
+      .slice(0, 8);
+  }, [categories, storeSettings?.header_categories]);
 
-  const navigation = [
-    { name: "HOME", href: "/" },
-    { name: "Shop", href: "/shop" },
-    ...activeCategories,
-    { name: "Track Order", href: "/track-order" },
-  ];
+  const navigation = useMemo(
+    () => [
+      { name: "HOME", href: "/" },
+      { name: "Shop", href: "/shop" },
+      ...activeCategories,
+      { name: "Track Order", href: "/track-order" },
+    ],
+    [activeCategories],
+  );
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,7 +149,14 @@ export function Header() {
                         {isSettingsLoading ? (
                           <div className="w-32 h-12 bg-muted/65 animate-pulse rounded-xl" />
                         ) : storeLogo ? (
-                          <Image src={storeLogo} alt={storeName} height={48} width={200} className="h-12 w-auto object-contain" />
+                          <Image
+                            src={storeLogo}
+                            alt={storeName}
+                            height={48}
+                            width={200}
+                            style={{ width: "auto" }}
+                            className="h-12 w-auto object-contain rounded-xl"
+                          />
                         ) : (
                           <span className="text-xl font-black tracking-tight text-foreground">{storeName}</span>
                         )}
@@ -308,7 +316,8 @@ export function Header() {
                       alt={storeName}
                       height={56}
                       width={200}
-                      className="h-10 sm:h-12 md:h-14 w-auto object-contain"
+                      style={{ width: "auto" }}
+                      className="h-10 sm:h-12 md:h-14 w-auto object-contain rounded-md"
                     />
                   </div>
                 ) : (
@@ -585,17 +594,17 @@ export function Header() {
       <div
         className={`hidden md:block border-t border-border/35 bg-background select-none transition-all duration-300 ease-in-out ${isScrolled
           ? "max-h-0 opacity-0 overflow-hidden border-t-0 py-0"
-          : "max-h-12 opacity-100 py-1.5"
+          : "max-h-14 opacity-100 py-1.5"
           }`}
       >
-        <div className="container-shop flex items-center justify-start gap-1 flex-wrap">
+        <div className="container-shop flex items-center justify-start gap-1 flex-nowrap overflow-x-auto scrollbar-none">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`py-1.5 px-4 text-[15px] font-semibold transition-all duration-300 rounded-md flex items-center gap-1 shrink-0 ${isActive
+                className={`py-1.5 px-2.5 lg:px-4 text-xs lg:text-[14px] font-semibold transition-all duration-300 rounded-md flex items-center gap-1 shrink-0 ${isActive
                   ? "bg-accent text-accent-foreground font-bold shadow-2xs"
                   : "text-foreground hover:text-accent hover:bg-secondary/40"
                   }`}

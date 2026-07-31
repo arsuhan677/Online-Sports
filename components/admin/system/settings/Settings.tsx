@@ -71,7 +71,9 @@ export default function AdminSettings() {
     whatsapp_banner_enabled: "false",
     whatsapp_banner_title: "",
     whatsapp_banner_number: "",
-    mobile_marquee_enabled: "false",
+    whatsapp_banner_message: "",
+    whatsapp_float_enabled: "true",
+    mobile_marquee_enabled: "true",
     mobile_marquee_text: "",
   });
 
@@ -387,21 +389,21 @@ export default function AdminSettings() {
         {t("admin.settingsTitle")}
       </h1>
 
-      <Tabs defaultValue="store" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:w-[800px]">
-          <TabsTrigger value="store" className="gap-2">
+      <Tabs defaultValue="store" className="space-y-6 p-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-4 h-auto p-0">
+          <TabsTrigger value="store" className="gap-2 py-2">
             <Store className="h-4 w-4" />
             Store Info
           </TabsTrigger>
-          <TabsTrigger value="global" className="gap-2">
+          <TabsTrigger value="global" className="gap-2 py-2">
             <Globe className="h-4 w-4" />
             {t("admin.globalSettings")}
           </TabsTrigger>
-          <TabsTrigger value="theme" className="gap-2">
+          <TabsTrigger value="theme" className="gap-2 py-2">
             <Palette className="h-4 w-4" />
             Theme
           </TabsTrigger>
-          <TabsTrigger value="marketing" className="gap-2">
+          <TabsTrigger value="marketing" className="gap-2 py-2">
             <Megaphone className="h-4 w-4" />
             Marketing
           </TabsTrigger>

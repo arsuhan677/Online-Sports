@@ -1,10 +1,12 @@
 "use client";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { Footer } from "./Footer";
 import { Header } from "./Header";
-import { WhatsAppBanner } from "@/components/main/WhatsAppBanner";
 
-import { MobileMarquee } from "@/components/main/MobileMarquee";
+const Footer = dynamic(() => import("./Footer").then((m) => m.Footer));
+const WhatsAppBanner = dynamic(() => import("@/components/main/WhatsAppBanner").then((m) => m.WhatsAppBanner));
+const WhatsAppFloatingButton = dynamic(() => import("@/components/main/WhatsAppFloatingButton").then((m) => m.WhatsAppFloatingButton));
+const MobileMarquee = dynamic(() => import("@/components/main/MobileMarquee").then((m) => m.MobileMarquee));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,6 +27,7 @@ export function Layout({ children }: LayoutProps) {
       {!isAdmin && <Header />}
       <main className="flex-1">{children}</main>
       {!isAdmin && showBanner && <WhatsAppBanner />}
+      {!isAdmin && <WhatsAppFloatingButton />}
       {!isAdmin && <Footer />}
       {!isAdmin && <MobileMarquee />}
     </div>

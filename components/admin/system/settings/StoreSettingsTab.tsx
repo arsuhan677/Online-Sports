@@ -30,11 +30,12 @@ interface StoreData {
   footer_text: string;
   topbar_text: string;
   topbar_enabled: string;
-  // WhatsApp Banner
+  // WhatsApp Banner & Floating Button
   whatsapp_banner_enabled: string;
   whatsapp_banner_title: string;
   whatsapp_banner_number: string;
   whatsapp_banner_message: string;
+  whatsapp_float_enabled: string;
   // Mobile Marquee
   mobile_marquee_enabled: string;
   mobile_marquee_text: string;
@@ -371,6 +372,26 @@ export function StoreSettingsTab({
               }
             />
           </div>
+
+          <div className="md:col-span-2 flex items-center justify-between p-4 border border-border rounded-lg">
+            <div>
+              <label className="text-sm font-medium">
+                Floating WhatsApp Message Button (Right Bottom)
+              </label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                ওয়েবসাইটের নিচে ডান কোণায় ফ্লোটিং WhatsApp চ্যাট বাটন দেখাবে
+              </p>
+            </div>
+            <Switch
+              checked={storeData.whatsapp_float_enabled !== "false"}
+              onCheckedChange={(checked) =>
+                setStoreData({
+                  ...storeData,
+                  whatsapp_float_enabled: checked ? "true" : "false",
+                })
+              }
+            />
+          </div>
         </div>
       </div>
 
@@ -458,21 +479,21 @@ export function StoreSettingsTab({
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-2 mb-4">
           <Megaphone className="h-5 w-5 text-accent" />
-          <h2 className="text-lg font-semibold">Mobile Marquee (News Ticker)</h2>
+          <h2 className="text-lg font-semibold">Bottom Marquee / News Ticker (নিচের স্লাইডিং টেক্সট)</h2>
         </div>
         <p className="text-xs text-muted-foreground mb-4">
-          This scrolling text will appear at the bottom of the screen on mobile devices only.
+          ওয়েবসাইটের সর্বনিচে চলমান ঘোষণা বার্তা (Marquee Ticker) চালু/বন্ধ করুন এবং টেক্সট পরিবর্তন করুন।
         </p>
         <div className="grid grid-cols-1 gap-4">
           <div className="flex items-center justify-between p-4 border border-border rounded-lg">
             <div>
-              <label className="text-sm font-medium">Enable Mobile Marquee</label>
+              <label className="text-sm font-medium">Bottom Marquee সক্রিয় করুন</label>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Turn on/off the mobile marquee
+                নিচের চলমান বার্তা চালু/বন্ধ করুন
               </p>
             </div>
             <Switch
-              checked={storeData.mobile_marquee_enabled === "true"}
+              checked={storeData.mobile_marquee_enabled !== "false"}
               onCheckedChange={(checked) =>
                 setStoreData({
                   ...storeData,
@@ -483,7 +504,7 @@ export function StoreSettingsTab({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Marquee Text
+              Marquee Text (চলমান বার্তা)
             </label>
             <input
               type="text"
@@ -492,10 +513,10 @@ export function StoreSettingsTab({
                 setStoreData({ ...storeData, mobile_marquee_text: e.target.value })
               }
               className="input-shop"
-              placeholder="Welcome to our store! Enjoy free shipping on orders over 1000 Taka."
+              placeholder="Welcome to our store! Enjoy free shipping on orders over 1000 Taka. | Order Your Favourite Club Jersey | Custom Jersey Available"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              The promotional text to scroll at the bottom of mobile screens.
+              একাধিক বার্তা পর পর দেখাতে চাইলে বার্তাগুলোর মাঝে <strong>|</strong> (Pipe) চিহ্ন ব্যবহার করুন। যেমন: Welcome | Order Club Jersey | Free Shipping
             </p>
           </div>
         </div>
